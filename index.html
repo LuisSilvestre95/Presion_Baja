@@ -1098,8 +1098,9 @@
         <div class="text-center">
             <div><i class="fas fa-user-tie"></i> Diseñado por: <a href="luissilvestre70@gmail.com">Luis Silvestre
 
-            </a></div>
-            <div><i class="fas fa-id-card"></i> CC 1.012.427.712 | <i class="fas fa-graduation-cap"></i> Registro Escuela de Ingenieria
+                </a></div>
+            <div><i class="fas fa-id-card"></i> CC 1.012.427.712 | <i class="fas fa-graduation-cap"></i> Registro
+                Escuela de Ingenieria
             </div>
             <div><i class="fas fa-code-branch"></i> Versión 2.0.0</div>
             <div class="mt-2">© 2025 TODO GAS SYR S.A.S. Todos los derechos reservados.</div>
@@ -1350,26 +1351,25 @@
         }
 
 
-        function checkSegmentStatus(segment) {
+        function checkSegmentStatus({ velocidad, deltaP, pi, caudal, longitud, diametro }) {
             const tipo = currentClient?.pressureLevel || 'baja';
 
             const limites = {
-                baja: {
-                    velocidadMax: 6,
-                    perdidaMaxPorcentual: 0.10
-                },
-                media: {
-                    velocidadMax: 10,
-                    perdidaMaxPorcentual: 0.20
-                }
+                baja: { velocidadMax: 6, perdidaMaxPorcentual: 0.10 },
+                media: { velocidadMax: 10, perdidaMaxPorcentual: 0.20 }
             };
 
             const { velocidadMax, perdidaMaxPorcentual } = limites[tipo];
 
-            const isVelocityValid = segment.velocidad <= velocidadMax;
-            const isPressureLossValid = segment.deltaP <= (perdidaMaxPorcentual * segment.pi);
+            const esTramoMuyCorto = longitud <= 0.3; // 30 cm o menos
+            const diametrosEstandar = [12, 16, 20, 25, 32, 40, 50];
+            const diametroRedondeado = Math.round(diametro);
+            const esDiametroValido = diametrosEstandar.includes(diametroRedondeado);
 
-            return isVelocityValid && isPressureLossValid
+            const velocidadPermitida = esTramoMuyCorto ? velocidadMax * 1.4 : velocidadMax;
+            const aprobado = esDiametroValido && velocidad <= velocidadPermitida && deltaP <= (perdidaMaxPorcentual * pi);
+
+            return aprobado
                 ? {
                     status: '<span class="status-badge status-approved"><i class="fas fa-check-circle"></i> Aprobado</span>',
                     class: "approved-row"
@@ -1379,6 +1379,14 @@
                     class: "rejected-row"
                 };
         }
+
+        // FUNCIÓN PARA MOSTRAR ADVERTENCIA SI EL DIÁMETRO NO ES ESTÁNDAR
+        function validateDiameter(diametro) {
+            const diametrosEstandar = [12, 16, 20, 25, 32, 40, 50];
+            const diametroRedondeado = Math.round(diametro);
+            return diametrosEstandar.includes(diametroRedondeado);
+        }
+
 
 
         function updatePiField() {
@@ -1397,12 +1405,22 @@
         }
 
         function addSegment() {
+            const diametro = parseFloat(document.getElementById('diametro').value);
+            const diametrosEstandar = [12, 16, 20, 25, 32, 40, 50];
+            const diametroRedondeado = Math.round(diametro);
+
+            // Validación flexible y segura
+            if (!diametrosEstandar.includes(diametroRedondeado)) {
+                showAlert('⚠️ Diámetro no estándar. Usa: 12, 16, 20, 25, 32, 40 o 50 mm.', 'danger');
+                return;
+            }
+
             const segment = validateSegment({
                 inicio: sanitizeNodeName(document.getElementById('inicio').value),
                 fin: sanitizeNodeName(document.getElementById('fin').value),
                 caudal: parseFloat(document.getElementById('caudal').value),
                 longitud: parseFloat(document.getElementById('longitud').value),
-                diametro: parseFloat(document.getElementById('diametro').value),
+                diametro: diametro,
                 pi: parseFloat(document.getElementById('pi').value),
                 material: document.getElementById('material').value || 'PE AL PE'
             });
@@ -1421,6 +1439,7 @@
             clearForm();
             calculateNetwork();
         }
+
 
         function clearForm() {
             document.getElementById('segmentForm').reset();
@@ -1528,7 +1547,15 @@
                 const deltaP = calculatePressureLoss(segment.caudal, le, segment.diametro);
                 const pf = (nodePressures.get(segment.fin) || (segment.pi - deltaP)).toFixed(2);
                 const velocidad = calculateVelocity(segment.caudal, segment.diametro, segment.pi);
-                const status = checkSegmentStatus({ velocidad, deltaP, pi: segment.pi });
+                const status = checkSegmentStatus({
+                    velocidad,
+                    deltaP,
+                    pi: segment.pi,
+                    caudal: segment.caudal,
+                    longitud: segment.longitud,
+                    diametro: segment.diametro
+                });
+
 
                 const tr = document.createElement('tr');
                 tr.className = status.class;
@@ -1606,7 +1633,15 @@
                 const deltaP = calculatePressureLoss(segment.caudal, le, segment.diametro);
                 const pf = initialNodePressure - deltaP;
                 const velocidad = calculateVelocity(segment.caudal, segment.diametro, initialNodePressure);
-                const status = checkSegmentStatus({ velocidad, deltaP, pi: initialNodePressure });
+                const status = checkSegmentStatus({
+                    velocidad,
+                    deltaP,
+                    pi: initialNodePressure,
+                    caudal: segment.caudal,
+                    longitud: segment.longitud,
+                    diametro: segment.diametro
+                });
+
 
                 totalDeltaP += deltaP;
                 maxVelocity = Math.max(maxVelocity, velocidad);
