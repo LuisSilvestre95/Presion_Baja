@@ -782,7 +782,6 @@
                 </button>
             </li>
         </ul>
-
         <!-- Contenido de pestañas -->
         <div class="tab-content" id="mainTabsContent">
             <!-- Pestaña Cliente -->
@@ -866,6 +865,17 @@
                                 <option value="GLP">Gas Licuado (GLP)</option>
                             </select>
                         </div>
+                        <!-- NUEVO CAMPO: Nivel de Presión -->
+                        <div class="col-md-4">
+                            <label for="pressureLevel" class="form-label">
+                                <i class="fas fa-tachometer-alt"></i> Nivel de Presión
+                            </label>
+                            <select class="form-select" id="pressureLevel">
+                                <option value="baja">Baja Presión</option>
+                                <option value="media">Media Presión</option>
+                            </select>
+                        </div>
+
                         <div class="col-12 mt-4">
                             <button type="button" id="saveClientBtn" class="btn btn-primary-custom me-2">
                                 <i class="fas fa-save"></i> Guardar Datos
@@ -876,6 +886,8 @@
                         </div>
                     </form>
                 </div>
+
+                <!-- Resumen del Cliente -->
                 <div class="summary-card hover-scale" id="clientSummary" style="display: none;">
                     <h4><i class="fas fa-clipboard-check"></i> Resumen del Cliente</h4>
                     <div class="row g-3">
@@ -931,159 +943,168 @@
                                     id="sumClientEmail"></span>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pestaña Cálculos -->
-            <div class="tab-pane fade" id="calculation" role="tabpanel" aria-labelledby="calculation-tab">
-                <div class="summary-card hover-scale" id="summarySection" style="display: none;">
-                    <h4><i class="fas fa-chart-line"></i> Resumen Técnico</h4>
-                    <div class="row g-3">
+                        <!-- NUEVO RESUMEN: Nivel de Presión -->
                         <div class="col-md-4">
                             <div class="summary-item">
-                                <strong><i class="fas fa-tachometer-alt"></i> Presión inicial:</strong> <span
-                                    id="summaryPi">0.00</span> mbar
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="summary-item">
-                                <strong><i class="fas fa-tachometer-alt"></i> Presión final:</strong> <span
-                                    id="summaryPf">0.00</span> mbar
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="summary-item">
-                                <strong><i class="fas fa-percentage"></i> Pérdida total:</strong> <span
-                                    id="summaryDeltaP">0.00</span> mbar (<span id="summaryPercent">0.00</span>%)
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="summary-item">
-                                <strong><i class="fas fa-bolt"></i> Velocidad máxima:</strong> <span
-                                    id="summaryMaxVel">0.00</span> m/s
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="summary-item">
-                                <strong><i class="fas fa-check-circle"></i> Tramos aprobados:</strong> <span
-                                    id="summaryApproved">0</span>/<span id="summaryTotal">0</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="summary-item">
-                                <strong><i class="fas fa-clipboard-list"></i> Estado general:</strong> <span
-                                    id="summaryStatus" class="fw-bold">-</span>
+                                <strong><i class="fas fa-tachometer-alt"></i> Nivel de Presión:</strong> <span
+                                    id="sumPressureLevel"></span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="form-section hover-scale">
-                    <h4><i class="fas fa-ruler-combined"></i> Parámetros del Tramo</h4>
-                    <form id="segmentForm" class="row g-3">
-                        <div class="col-md-2 col-sm-6">
-                            <label for="inicio" class="form-label">
-                                <i class="fas fa-play"></i> Inicio
-                            </label>
-                            <input type="text" class="form-control" id="inicio" pattern="[A-Za-z0-9'_-]+"
-                                maxlength="20">
-                        </div>
-                        <div class="col-md-2 col-sm-6">
-                            <label for="fin" class="form-label">
-                                <i class="fas fa-stop"></i> Fin
-                            </label>
-                            <input type="text" class="form-control" id="fin" pattern="[A-Za-z0-9'_-]+" maxlength="20">
-                        </div>
-                        <div class="col-md-2 col-sm-6">
-                            <label for="caudal" class="form-label">
-                                <i class="fas fa-tint"></i> Caudal (m³/h)
-                            </label>
-                            <input type="number" step="0.01" min="0.01" max="1000" class="form-control" id="caudal">
-                        </div>
-                        <div class="col-md-2 col-sm-6">
-                            <label for="longitud" class="form-label">
-                                <i class="fas fa-ruler-horizontal"></i> Longitud (m)
-                            </label>
-                            <input type="number" step="0.01" min="0.01" max="10000" class="form-control" id="longitud">
-                        </div>
-                        <div class="col-md-2 col-sm-6">
-                            <label for="diametro" class="form-label">
-                                <i class="fas fa-circle"></i> Diámetro (mm)
-                            </label>
-                            <input type="number" step="0.01" min="0.05" max="1000" class="form-control" id="diametro">
-                        </div>
-                        <div class="col-md-2 col-sm-6">
-                            <label for="pi" class="form-label">
-                                <i class="fas fa-tachometer-alt"></i> Pi (mbar)
-                            </label>
-                            <input type="number" step="0.01" min="0.01" max="10000" class="form-control" id="pi">
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <label for="material" class="form-label">
-                                <i class="fas fa-hammer"></i> Material
-                            </label>
-                            <select id="material" class="form-select">
-                                <option value="PE AL PE">PE AL PE</option>
-                                <option value="Cobre">Cobre</option>
-                                <option value="Acero">Acero</option>
-                            </select>
-                        </div>
-                        <div class="col-md-9 col-sm-12 d-flex flex-wrap align-items-end gap-2">
-                            <button type="button" id="addBtn" class="btn btn-primary-custom">
-                                <i class="fas fa-plus-circle"></i> Agregar Tramo
-                            </button>
-                            <button type="button" id="calculateBtn" class="btn btn-primary-custom">
-                                <i class="fas fa-calculator"></i> Calcular Red
-                            </button>
-                            <button type="button" id="clearAllBtn" class="btn btn-outline-custom">
-                                <i class="fas fa-trash-alt"></i> Limpiar Todo
-                            </button>
-                            <button type="button" id="exportPdfBtn" class="btn btn-primary-custom">
-                                <i class="fas fa-file-pdf"></i> Exportar a PDF
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div class="table-responsive result-table hover-scale">
-                    <table class="table table-bordered table-hover" id="resultsTable">
-                        <thead>
-                            <tr>
-                                <th><i class="fas fa-play"></i> Inicio</th>
-                                <th><i class="fas fa-stop"></i> Fin</th>
-                                <th><i class="fas fa-tint"></i> Caudal (m³/h)</th>
-                                <th><i class="fas fa-ruler-horizontal"></i> Longitud (m)</th>
-                                <th><i class="fas fa-ruler-combined"></i> LE (m)</th>
-                                <th><i class="fas fa-circle"></i> Diámetro (mm)</th>
-                                <th><i class="fas fa-tachometer-alt"></i> Pi (mbar)</th>
-                                <th><i class="fas fa-percentage"></i> Pérdida (mbar)</th>
-                                <th><i class="fas fa-tachometer-alt"></i> Pf (mbar)</th>
-                                <th><i class="fas fa-bolt"></i> Velocidad (m/s)</th>
-                                <th><i class="fas fa-hammer"></i> Material</th>
-                                <th><i class="fas fa-clipboard-check"></i> Estado</th>
-                                <th><i class="fas fa-cog"></i> Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div class="chart-container hover-scale">
-                    <h4><i class="fas fa-chart-bar"></i> Gráfico de Presión y Velocidad</h4>
-                    <canvas id="pressureChart"></canvas>
-                </div>
             </div>
         </div>
 
-        <!-- Footer -->
-        <div class="footer">
-            <div class="text-center">
-                <div><i class="fas fa-user-tie"></i> Diseñado por: <a href="mailto:polidoro@example.com">Polidoro
-                        Saavedra</a></div>
-                <div><i class="fas fa-id-card"></i> CC 4.121.669 | <i class="fas fa-graduation-cap"></i> Registro SENA
-                    1300196</div>
-                <div><i class="fas fa-code-branch"></i> Versión 2.0.0</div>
-                <div class="mt-2">© 2025 TODO GAS SYR S.A.S. Todos los derechos reservados.</div>
+
+        <!-- Pestaña Cálculos -->
+        <div class="tab-pane fade" id="calculation" role="tabpanel" aria-labelledby="calculation-tab">
+            <div class="summary-card hover-scale" id="summarySection" style="display: none;">
+                <h4><i class="fas fa-chart-line"></i> Resumen Técnico</h4>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="summary-item">
+                            <strong><i class="fas fa-tachometer-alt"></i> Presión inicial:</strong> <span
+                                id="summaryPi">0.00</span> mbar
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-item">
+                            <strong><i class="fas fa-tachometer-alt"></i> Presión final:</strong> <span
+                                id="summaryPf">0.00</span> mbar
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-item">
+                            <strong><i class="fas fa-percentage"></i> Pérdida total:</strong> <span
+                                id="summaryDeltaP">0.00</span> mbar (<span id="summaryPercent">0.00</span>%)
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-item">
+                            <strong><i class="fas fa-bolt"></i> Velocidad máxima:</strong> <span
+                                id="summaryMaxVel">0.00</span> m/s
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-item">
+                            <strong><i class="fas fa-check-circle"></i> Tramos aprobados:</strong> <span
+                                id="summaryApproved">0</span>/<span id="summaryTotal">0</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-item">
+                            <strong><i class="fas fa-clipboard-list"></i> Estado general:</strong> <span
+                                id="summaryStatus" class="fw-bold">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-section hover-scale">
+                <h4><i class="fas fa-ruler-combined"></i> Parámetros del Tramo</h4>
+                <form id="segmentForm" class="row g-3">
+                    <div class="col-md-2 col-sm-6">
+                        <label for="inicio" class="form-label">
+                            <i class="fas fa-play"></i> Inicio
+                        </label>
+                        <input type="text" class="form-control" id="inicio" pattern="[A-Za-z0-9'_-]+" maxlength="20">
+                    </div>
+                    <div class="col-md-2 col-sm-6">
+                        <label for="fin" class="form-label">
+                            <i class="fas fa-stop"></i> Fin
+                        </label>
+                        <input type="text" class="form-control" id="fin" pattern="[A-Za-z0-9'_-]+" maxlength="20">
+                    </div>
+                    <div class="col-md-2 col-sm-6">
+                        <label for="caudal" class="form-label">
+                            <i class="fas fa-tint"></i> Caudal (m³/h)
+                        </label>
+                        <input type="number" step="0.01" min="0.01" max="1000" class="form-control" id="caudal">
+                    </div>
+                    <div class="col-md-2 col-sm-6">
+                        <label for="longitud" class="form-label">
+                            <i class="fas fa-ruler-horizontal"></i> Longitud (m)
+                        </label>
+                        <input type="number" step="0.01" min="0.01" max="10000" class="form-control" id="longitud">
+                    </div>
+                    <div class="col-md-2 col-sm-6">
+                        <label for="diametro" class="form-label">
+                            <i class="fas fa-circle"></i> Diámetro (mm)
+                        </label>
+                        <input type="number" step="0.01" min="0.05" max="1000" class="form-control" id="diametro">
+                    </div>
+                    <div class="col-md-2 col-sm-6">
+                        <label for="pi" class="form-label">
+                            <i class="fas fa-tachometer-alt"></i> Pi (mbar)
+                        </label>
+                        <input type="number" step="0.01" min="0.01" max="10000" class="form-control" id="pi">
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <label for="material" class="form-label">
+                            <i class="fas fa-hammer"></i> Material
+                        </label>
+                        <select id="material" class="form-select">
+                            <option value="PE AL PE">PE AL PE</option>
+                            <option value="Cobre">Cobre</option>
+                            <option value="Acero">Acero</option>
+                        </select>
+                    </div>
+                    <div class="col-md-9 col-sm-12 d-flex flex-wrap align-items-end gap-2">
+                        <button type="button" id="addBtn" class="btn btn-primary-custom">
+                            <i class="fas fa-plus-circle"></i> Agregar Tramo
+                        </button>
+                        <button type="button" id="calculateBtn" class="btn btn-primary-custom">
+                            <i class="fas fa-calculator"></i> Calcular Red
+                        </button>
+                        <button type="button" id="clearAllBtn" class="btn btn-outline-custom">
+                            <i class="fas fa-trash-alt"></i> Limpiar Todo
+                        </button>
+                        <button type="button" id="exportPdfBtn" class="btn btn-primary-custom">
+                            <i class="fas fa-file-pdf"></i> Exportar a PDF
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="table-responsive result-table hover-scale">
+                <table class="table table-bordered table-hover" id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-play"></i> Inicio</th>
+                            <th><i class="fas fa-stop"></i> Fin</th>
+                            <th><i class="fas fa-tint"></i> Caudal (m³/h)</th>
+                            <th><i class="fas fa-ruler-horizontal"></i> Longitud (m)</th>
+                            <th><i class="fas fa-ruler-combined"></i> LE (m)</th>
+                            <th><i class="fas fa-circle"></i> Diámetro (mm)</th>
+                            <th><i class="fas fa-tachometer-alt"></i> Pi (mbar)</th>
+                            <th><i class="fas fa-percentage"></i> Pérdida (mbar)</th>
+                            <th><i class="fas fa-tachometer-alt"></i> Pf (mbar)</th>
+                            <th><i class="fas fa-bolt"></i> Velocidad (m/s)</th>
+                            <th><i class="fas fa-hammer"></i> Material</th>
+                            <th><i class="fas fa-clipboard-check"></i> Estado</th>
+                            <th><i class="fas fa-cog"></i> Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="chart-container hover-scale">
+                <h4><i class="fas fa-chart-bar"></i> Gráfico de Presión y Velocidad</h4>
+                <canvas id="pressureChart"></canvas>
             </div>
         </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="text-center">
+            <div><i class="fas fa-user-tie"></i> Diseñado por: <a href="luissilvestre70@gmail.com">Luis Silvestre
+                
+            </a></div>
+            <div><i class="fas fa-id-card"></i> CC 4.121.669 | <i class="fas fa-graduation-cap"></i> Registro SENA
+                1300196</div>
+            <div><i class="fas fa-code-branch"></i> Versión 2.0.0</div>
+            <div class="mt-2">© 2025 TODO GAS SYR S.A.S. Todos los derechos reservados.</div>
+        </div>
+    </div>
     </div>
 
     <!-- Modal de Confirmación -->
@@ -1165,6 +1186,7 @@
                 email: document.getElementById('clientEmail').value.trim() || '',
                 projectType: document.getElementById('projectType').value || 'No especificado',
                 gasType: document.getElementById('gasType').value || 'No especificado',
+                pressureLevel: document.getElementById('pressureLevel').value || 'baja', // NUEVO
                 timestamp: new Date().toISOString()
             };
 
@@ -1178,6 +1200,7 @@
                 showAlert('Error al guardar los datos del cliente', 'danger');
             }
         }
+
 
         function loadClientData() {
             try {
@@ -1310,22 +1333,53 @@
         }
 
         function calculatePressureLoss(caudal, le, diametro) {
-            const deltaP = 23200 * 0.67 * caudal * Math.pow(le, 1.82) * Math.pow(diametro, -4.82);
-            return parseFloat(Math.max(0, deltaP).toFixed(4));
+            if (diametro <= 0 || le <= 0 || caudal < 0) return 0;
+            const C = 23200; // Constante empírica para mbar, m³/h, m, mm
+            const deltaP = C * 0.67 * caudal * Math.pow(le, 1.82) * Math.pow(diametro, -4.82);
+            return parseFloat(deltaP.toFixed(4));
         }
 
-        function calculateVelocity(caudal, diametro, pi) {
-            const velocidad = 345 * caudal * Math.pow((pi / 1000) + 0.7236, -1) * Math.pow(diametro, -2);
-            return parseFloat(Math.max(0, velocidad).toFixed(2));
+
+        function calculateVelocity(caudal, diametro) {
+            if (diametro <= 0 || caudal < 0) return 0; // validación segura
+
+            const d_m = diametro / 1000; // mm → m
+            const area = Math.PI * Math.pow(d_m, 2) / 4;
+            const velocidad = (caudal / 3600) / area; // m³/h → m³/s
+            return parseFloat(velocidad.toFixed(2));
         }
+
 
         function checkSegmentStatus(segment) {
-            const isVelocityValid = segment.velocidad <= 10;
-            const isPressureLossValid = segment.deltaP <= (0.1 * segment.pi);
-            return isVelocityValid && isPressureLossValid ?
-                { status: '<span class="status-badge status-approved"><i class="fas fa-check-circle"></i> Aprobado</span>', class: "approved-row" } :
-                { status: '<span class="status-badge status-rejected"><i class="fas fa-times-circle"></i> Rechazado</span>', class: "rejected-row" };
+            const tipo = currentClient?.pressureLevel || 'baja';
+
+            const limites = {
+                baja: {
+                    velocidadMax: 6,
+                    perdidaMaxPorcentual: 0.10
+                },
+                media: {
+                    velocidadMax: 10,
+                    perdidaMaxPorcentual: 0.20
+                }
+            };
+
+            const { velocidadMax, perdidaMaxPorcentual } = limites[tipo];
+
+            const isVelocityValid = segment.velocidad <= velocidadMax;
+            const isPressureLossValid = segment.deltaP <= (perdidaMaxPorcentual * segment.pi);
+
+            return isVelocityValid && isPressureLossValid
+                ? {
+                    status: '<span class="status-badge status-approved"><i class="fas fa-check-circle"></i> Aprobado</span>',
+                    class: "approved-row"
+                }
+                : {
+                    status: '<span class="status-badge status-rejected"><i class="fas fa-times-circle"></i> Rechazado</span>',
+                    class: "rejected-row"
+                };
         }
+
 
         function updatePiField() {
             const piField = document.getElementById('pi');
@@ -1720,6 +1774,7 @@
                 const margin = 10;
                 let yPos = margin;
 
+                // Encabezado
                 doc.setFillColor(44, 62, 80);
                 doc.rect(0, 0, pageWidth, 20, 'F');
                 doc.setFont('helvetica', 'bold');
@@ -1731,6 +1786,7 @@
                 doc.text('NIT: 901.126.243-3', pageWidth / 2, 13, { align: 'center' });
                 doc.text(`Fecha: ${new Date().toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })}`, pageWidth - margin, 12, { align: 'right' });
 
+                // Datos del cliente
                 yPos += 18;
                 doc.setFontSize(12);
                 doc.setTextColor(0);
@@ -1743,7 +1799,7 @@
                     [`Dirección: ${currentClient.address}`, `Teléfono: ${currentClient.phone}`],
                     [`Municipio: ${currentClient.city}`, `Correo: ${currentClient.email || 'N/A'}`],
                     [`Departamento: ${currentClient.department}`, `Proyecto: ${currentClient.projectType}`],
-                    [`Tipo de Gas: ${currentClient.gasType}`, '']
+                    [`Tipo de Gas: ${currentClient.gasType}`, `Nivel de Presión: ${currentClient.pressureLevel === 'media' ? 'Media Presión' : 'Baja Presión'}`]
                 ];
                 let clientY = yPos + 6;
                 clientData.forEach(row => {
@@ -1752,6 +1808,7 @@
                     clientY += 6;
                 });
 
+                // Resumen técnico
                 yPos = clientY + 10;
                 doc.setFontSize(12);
                 doc.setFont('helvetica', 'bold');
@@ -1759,18 +1816,35 @@
                 doc.setFontSize(10);
                 doc.setFont('helvetica', 'normal');
 
+                // Función segura para obtener texto desde el DOM
+                const getText = (id) => {
+                    const el = document.getElementById(id);
+                    return el ? el.textContent.trim() : 'N/A';
+                };
+
+                // Determinar estado general
+                const estadoGeneral = getText('summaryStatus').toUpperCase().includes('APROBADO') ? 'APROBADO' : 'REQUIERE AJUSTES';
+
+                // Tipo de red (formato visual)
+                const tipoRed = currentClient.pressureLevel === 'media' ? 'Media Presión' : 'Baja Presión';
+
+                // Datos para mostrar
                 const summaryData = [
-                    [`Presión inicial: ${document.getElementById('summaryPi').textContent} mbar`, `Presión final: ${document.getElementById('summaryPf').textContent} mbar`],
-                    [`Pérdida total: ${document.getElementById('summaryDeltaP').textContent} mbar (${document.getElementById('summaryPercent').textContent}%)`, `Velocidad máxima: ${document.getElementById('summaryMaxVel').textContent} m/s`],
-                    [`Tramos aprobados: ${document.getElementById('summaryApproved').textContent}/${document.getElementById('summaryTotal').textContent}`, `Estado general: ${document.getElementById('summaryStatus').textContent.includes('APROBADO') ? 'APROBADO' : 'REQUIERE AJUSTES'}`]
+                    [`Tipo de Red: ${tipoRed}`, ''],
+                    [`Presión inicial: ${getText('summaryPi')} mbar`, `Presión final: ${getText('summaryPf')} mbar`],
+                    [`Pérdida total: ${getText('summaryDeltaP')} mbar (${getText('summaryPercent')}%)`, `Velocidad máxima: ${getText('summaryMaxVel')} m/s`],
+                    [`Tramos aprobados: ${getText('summaryApproved')}/${getText('summaryTotal')}`, `Estado general: ${estadoGeneral}`]
                 ];
+
                 let summaryY = yPos + 7;
                 summaryData.forEach(row => {
                     doc.text(row[0], margin, summaryY);
-                    doc.text(row[1], pageWidth / 2, summaryY);
+                    if (row[1]) doc.text(row[1], pageWidth / 2, summaryY);
                     summaryY += 6;
                 });
 
+
+                // Tabla técnica de tramos
                 yPos = summaryY + 10;
                 doc.setFontSize(12);
                 doc.setFont('helvetica', 'bold');
@@ -1781,8 +1855,16 @@
                     const le = calculateLE(s.longitud);
                     const deltaP = calculatePressureLoss(s.caudal, le, s.diametro);
                     const pf = nodePressures.get(s.fin) || (s.pi - deltaP);
-                    const velocidad = calculateVelocity(s.caudal, s.diametro, s.pi);
-                    const estado = velocidad <= 10 && deltaP <= (0.1 * s.pi) ? 'Aprobado' : 'Rechazado';
+                    const velocidad = calculateVelocity(s.caudal, s.diametro);
+
+                    const tipo = currentClient?.pressureLevel || 'baja';
+                    const limites = {
+                        baja: { velocidadMax: 6, perdidaMaxPorcentual: 0.1 },
+                        media: { velocidadMax: 10, perdidaMaxPorcentual: 0.2 }
+                    };
+                    const { velocidadMax, perdidaMaxPorcentual } = limites[tipo];
+                    const estado = velocidad <= velocidadMax && deltaP <= (perdidaMaxPorcentual * s.pi) ? 'Aprobado' : 'Rechazado';
+
                     return [
                         s.inicio,
                         s.fin,
@@ -1825,6 +1907,7 @@
                     }
                 });
 
+                // Gráfico de presión
                 const canvas = document.getElementById('pressureChart');
                 const chartImg = await html2canvas(canvas, {
                     scale: 3,
@@ -1849,12 +1932,13 @@
                     doc.addImage(imgData, 'PNG', margin, currentY + 5, imgWidth, imgHeight * 0.7);
                 }
 
+                // Pie de página
                 doc.setFontSize(9);
                 doc.setTextColor(100);
                 doc.setDrawColor(200);
                 doc.line(margin, pageHeight - 20, pageWidth - margin, pageHeight - 20);
-                doc.text('Diseñado por: Polidoro Saavedra Rodríguez', margin, pageHeight - 15);
-                doc.text('CC 4.121.669 | Registro SENA 1300196', margin, pageHeight - 10);
+                doc.text('Diseñado por: Luis Silvestre - Ingeniero Desarrollador ', margin, pageHeight - 15);
+                doc.text('CC 1.012.427.712 |  Ingeniero Sistemas', margin, pageHeight - 10);
                 doc.text(`Versión 2.0.0 | Generado el: ${new Date().toLocaleString('es-CO')}`, margin, pageHeight - 5);
 
                 const fileName = `Informe_Tecnico_${currentClient.name.replace(/[^a-z0-9]/gi, '_')}_${Date.now()}.pdf`;
